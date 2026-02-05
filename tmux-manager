@@ -4,7 +4,7 @@
 # Arrow keys to navigate, Enter to select
 #
 
-set -e
+# Don't use set -e as it causes issues with read commands
 
 # Colors
 BLACK='\033[0;30m'
@@ -36,27 +36,19 @@ cleanup() {
 trap cleanup EXIT
 
 read_key() {
-    local key
+    local key=""
 
     # Read from /dev/tty for SSH/.bashrc compatibility
-    if [[ -e /dev/tty ]]; then
-        IFS= read -rsn1 key < /dev/tty 2>/dev/null
-    else
-        IFS= read -rsn1 key 2>/dev/null
-    fi
+    IFS= read -rsn1 key < /dev/tty 2>/dev/null || true
 
     if [[ $key == $'\x1b' ]]; then
-        if [[ -e /dev/tty ]]; then
-            read -rsn2 -t 0.1 key < /dev/tty 2>/dev/null
-        else
-            read -rsn2 -t 0.1 key 2>/dev/null
-        fi
+        read -rsn2 -t 0.1 key < /dev/tty 2>/dev/null || true
         case "$key" in
             '[A') echo "up" ;;
             '[B') echo "down" ;;
             *) echo "escape" ;;
         esac
-    elif [[ $key == "" ]]; then
+    elif [[ -z "$key" ]]; then
         echo "enter"
     elif [[ $key == "q" || $key == "Q" ]]; then
         echo "quit"
@@ -86,18 +78,22 @@ create_session() {
 }
 
 get_terminal_size() {
-    TERM_LINES=$(tput lines)
-    TERM_COLS=$(tput cols)
+    TERM_LINES=$(tput lines 2>/dev/null || echo 24)
+    TERM_COLS=$(tput cols 2>/dev/null || echo 80)
 }
 
 draw_box() {
     local y=$1 x=$2 h=$3 w=$4 title="$5"
+    local i line=""
+
+    # Build horizontal line
+    for ((i=0; i<w-2; i++)); do
+        line="${line}─"
+    done
 
     # Top border
     move_cursor $y $x
-    printf "${CYAN}╭"
-    printf '─%.0s' $(seq 1 $((w-2)))
-    printf "╮${NC}"
+    printf "${CYAN}╭%s╮${NC}" "$line"
 
     # Title
     if [[ -n "$title" ]]; then
@@ -115,9 +111,7 @@ draw_box() {
 
     # Bottom border
     move_cursor $((y+h-1)) $x
-    printf "${CYAN}╰"
-    printf '─%.0s' $(seq 1 $((w-2)))
-    printf "╯${NC}"
+    printf "${CYAN}╰%s╯${NC}" "$line"
 }
 
 draw_menu() {
