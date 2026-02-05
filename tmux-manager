@@ -115,6 +115,7 @@ main() {
         echo -e "  ${BOLD}1-$session_count)${NC} Attach to existing session"
     fi
     echo -e "  ${BOLD}n)${NC} Create ${BOLD}n${NC}ew session with custom name"
+    echo -e "  ${BOLD}c)${NC} ${BOLD}C${NC}reate quick session (session-HHMMSS)"
     echo -e "  ${BOLD}q)${NC} ${BOLD}Q${NC}uit (no tmux)"
     echo
 
@@ -129,9 +130,17 @@ main() {
                 exit 0
                 ;;
             [nN])
-                echo -ne "${CYAN}Enter session name ${YELLOW}(Enter = session-HHMMSS)${NC}: "
+                echo -ne "${CYAN}Enter session name: ${NC}"
                 read -r session_name
-                create_session "$session_name"
+                if [[ -z "$session_name" ]]; then
+                    echo -e "${RED}Session name cannot be empty.${NC}"
+                else
+                    create_session "$session_name"
+                    return
+                fi
+                ;;
+            [cC])
+                create_session ""
                 return
                 ;;
             "")
