@@ -1,47 +1,37 @@
 # tmux-manager
 
-Interactive tmux session manager for SSH connections. Select existing sessions or create new ones with custom names.
+Interactive TUI for managing tmux sessions. Navigate with arrow keys, select with Enter.
 
 ## Preview
 
 ```
-╔════════════════════════════════════╗
-║      tmux session manager          ║
-╚════════════════════════════════════╝
-
-Existing sessions:
-─────────────────────────────────────
-  1) dev - 3 windows
-  2) server - 1 windows (attached)
-  3) logs - 2 windows
-─────────────────────────────────────
-
-Options:
-  1-3) Attach to existing session
-  n) Create new session with custom name
-  c/Enter) Create quick session (session-HHMMSS)
-  q) Quit (no tmux)
-
-Select option:
+        ╭────────────────────┤ tmux sessions ├─────────────────────╮
+        │                                                          │
+        │    dev                              3w                   │
+        │    server                           1w ●                 │
+        │  ➤ logs                             2w                   │
+        │    + New session                                         │
+        │    Skip (no tmux)                                        │
+        │                                                          │
+        │  ↑↓/jk navigate  Enter select  q quit                    │
+        ╰──────────────────────────────────────────────────────────╯
 ```
 
 ## Installation
 
-### Interactive (recommended)
+### Interactive
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/z4nr34l/tmux-manager/main/install.sh | bash
 ```
 
-The installer will guide you through configuration options.
-
-### Non-interactive / Automated
+### Non-interactive
 
 ```bash
-# Full installation with all features enabled
-curl -fsSL https://raw.githubusercontent.com/z4nr34l/tmux-manager/main/install.sh | bash -s -- --bashrc --path-export -y
+# Full install with auto-start
+curl -fsSL https://raw.githubusercontent.com/z4nr34l/tmux-manager/main/install.sh | bash -s -- --bashrc -y
 
-# Install without modifying .bashrc
+# Without .bashrc modification
 curl -fsSL https://raw.githubusercontent.com/z4nr34l/tmux-manager/main/install.sh | bash -s -- --no-bashrc -y
 ```
 
@@ -54,16 +44,23 @@ curl -fsSL https://raw.githubusercontent.com/z4nr34l/tmux-manager/main/install.s
 | `--path-export` | Add ~/.local/bin to PATH |
 | `--no-path-export` | Don't modify PATH |
 | `-y, --yes` | Accept defaults (non-interactive) |
-| `-h, --help` | Show help message |
+
+## Controls
+
+| Key | Action |
+|-----|--------|
+| `↑` / `k` | Move up |
+| `↓` / `j` | Move down |
+| `Enter` | Select |
+| `q` / `Esc` | Quit |
 
 ## Features
 
-- Lists all existing tmux sessions with window count
-- Shows which sessions are currently attached
-- Attach to any session by number
-- Create new sessions with custom names
-- Skip tmux entirely with quit option
-- Auto-starts on SSH login (optional)
+- Arrow key navigation
+- Shows session window count
+- Indicates attached sessions (●)
+- Create new session with custom or auto-generated name
+- Centered TUI box
 
 ## Uninstall
 
