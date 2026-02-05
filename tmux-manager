@@ -142,21 +142,22 @@ draw_menu() {
     for item in "${items[@]}"; do
         move_cursor $((content_y + i)) $content_x
 
+        local prefix="  "
         if [[ $i -eq $selected ]]; then
-            printf "${BG_BLUE}${WHITE}${BOLD}"
+            prefix="${CYAN}➤${NC} "
         fi
 
         if [[ "$item" == "__NEW__" ]]; then
             if [[ $i -eq $selected ]]; then
-                printf "  ➤ + New session                            ${NC}"
+                printf "%b${GREEN}+ New session${NC}                          " "$prefix"
             else
-                printf "  ${GREEN}+ New session${NC}"
+                printf "%b${GREEN}+ New session${NC}" "$prefix"
             fi
         elif [[ "$item" == "__SKIP__" ]]; then
             if [[ $i -eq $selected ]]; then
-                printf "  ➤ Skip (no tmux)                           ${NC}"
+                printf "%b${DIM}Skip (no tmux)${NC}                         " "$prefix"
             else
-                printf "  ${DIM}Skip (no tmux)${NC}"
+                printf "%b${DIM}Skip (no tmux)${NC}" "$prefix"
             fi
         else
             local session_info="${info[$i]}"
@@ -166,9 +167,9 @@ draw_menu() {
             [[ -n "$attached" ]] && suffix=" ${GREEN}●${NC}"
 
             if [[ $i -eq $selected ]]; then
-                printf "  ➤ %-30s %2sw${NC}" "$item" "$windows"
+                printf "%b%-30s ${DIM}%sw${NC}" "$prefix" "$item" "$windows"
             else
-                printf "    %-30s ${DIM}%sw${NC}%b" "$item" "$windows" "$suffix"
+                printf "%b%-30s ${DIM}%sw${NC}%b" "$prefix" "$item" "$windows" "$suffix"
             fi
         fi
 
