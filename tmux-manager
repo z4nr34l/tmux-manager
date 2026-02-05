@@ -118,34 +118,39 @@ main() {
     echo -e "  ${BOLD}q)${NC} ${BOLD}Q${NC}uit (no tmux)"
     echo
 
-    # Read choice
-    echo -ne "${CYAN}Select option: ${NC}"
-    read -r choice
+    # Read choice with loop for invalid input
+    while true; do
+        echo -ne "${CYAN}Select option: ${NC}"
+        read -r choice
 
-    case "$choice" in
-        [qQ])
-            echo -e "${YELLOW}Exiting without tmux session.${NC}"
-            exit 0
-            ;;
-        [nN])
-            echo -ne "${CYAN}Enter session name ${YELLOW}(Enter = session-HHMMSS)${NC}: "
-            read -r session_name
-            create_session "$session_name"
-            ;;
-        *)
-            # Check if it's a number within range
-            if [[ "$choice" =~ ^[0-9]+$ ]] && [[ $choice -ge 1 ]] && [[ $choice -le $session_count ]]; then
-                local selected_session="${session_names[$((choice-1))]}"
-                echo -e "${GREEN}Attaching to: $selected_session${NC}"
-                sleep 0.5
-                attach_session "$selected_session"
-            else
-                echo -e "${RED}Invalid option. Creating default session...${NC}"
-                sleep 1
-                create_session ""
-            fi
-            ;;
-    esac
+        case "$choice" in
+            [qQ])
+                echo -e "${YELLOW}Exiting without tmux session.${NC}"
+                exit 0
+                ;;
+            [nN])
+                echo -ne "${CYAN}Enter session name ${YELLOW}(Enter = session-HHMMSS)${NC}: "
+                read -r session_name
+                create_session "$session_name"
+                return
+                ;;
+            "")
+                echo -e "${RED}Please select an option.${NC}"
+                ;;
+            *)
+                # Check if it's a number within range
+                if [[ "$choice" =~ ^[0-9]+$ ]] && [[ $choice -ge 1 ]] && [[ $choice -le $session_count ]]; then
+                    local selected_session="${session_names[$((choice-1))]}"
+                    echo -e "${GREEN}Attaching to: $selected_session${NC}"
+                    sleep 0.5
+                    attach_session "$selected_session"
+                    return
+                else
+                    echo -e "${RED}Invalid option. Please try again.${NC}"
+                fi
+                ;;
+        esac
+    done
 }
 
 main "$@"
