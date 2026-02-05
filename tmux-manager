@@ -44,20 +44,20 @@ read_key() {
     if [[ $key == $'\x1b' ]]; then
         read -rsn2 -t 0.1 key < /dev/tty 2>/dev/null || true
         case "$key" in
-            '[A') echo "up" ;;
-            '[B') echo "down" ;;
-            *) echo "escape" ;;
+            '[A') KEY_RESULT="up" ;;
+            '[B') KEY_RESULT="down" ;;
+            *) KEY_RESULT="escape" ;;
         esac
     elif [[ -z "$key" ]]; then
-        echo "enter"
+        KEY_RESULT="enter"
     elif [[ $key == "q" || $key == "Q" ]]; then
-        echo "quit"
+        KEY_RESULT="quit"
     elif [[ $key == "j" ]]; then
-        echo "down"
+        KEY_RESULT="down"
     elif [[ $key == "k" ]]; then
-        echo "up"
+        KEY_RESULT="up"
     else
-        echo "other"
+        KEY_RESULT="other"
     fi
 }
 
@@ -179,7 +179,7 @@ draw_menu() {
 
     # Footer
     move_cursor $((start_y + box_height - 2)) $((start_x + 2))
-    printf "${DIM}↑↓/jk${NC} navigate  ${DIM}Enter${NC} select  ${DIM}q${NC} quit"
+    printf "${DIM}↑↓/jk${NC} navigate  ${DIM}Enter${NC} select  ${DIM}q/Esc${NC} quit"
 }
 
 prompt_session_name() {
@@ -258,9 +258,9 @@ main() {
     draw_menu menu_items menu_info $selected
 
     while true; do
-        local key=$(read_key)
+        read_key
 
-        case "$key" in
+        case "$KEY_RESULT" in
             "up")
                 ((selected--))
                 [[ $selected -lt 0 ]] && selected=$((total - 1))

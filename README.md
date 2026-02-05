@@ -13,7 +13,7 @@ Interactive TUI for managing tmux sessions. Navigate with arrow keys, select wit
         │    + New session                                         │
         │    Skip (no tmux)                                        │
         │                                                          │
-        │  ↑↓/jk navigate  Enter select  q quit                    │
+        │  ↑↓/jk navigate  Enter select  q/Esc quit                 │
         ╰──────────────────────────────────────────────────────────╯
 ```
 
