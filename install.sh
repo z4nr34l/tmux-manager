@@ -89,16 +89,21 @@ if [[ ":$PATH:" != *":$BIN_DIR:"* ]]; then
     echo -e "    ${BOLD}export PATH=\"\$HOME/.local/bin:\$PATH\"${NC}"
 fi
 
-# Offer to configure .bashrc
+# Configure .bashrc
 echo
-echo -e "${CYAN}Would you like to auto-start tmux-manager on SSH login?${NC}"
-echo -e "This will modify your ~/.bashrc"
-echo -ne "${BOLD}[y/N]: ${NC}"
-read -r response
+echo -e "${CYAN}Configuring auto-start on SSH login...${NC}"
 
-if [[ "$response" =~ ^[yY]$ ]]; then
-    BASHRC="$HOME/.bashrc"
+BASHRC="$HOME/.bashrc"
+SKIP_BASHRC=false
 
+# Check if --no-bashrc flag was passed
+for arg in "$@"; do
+    if [[ "$arg" == "--no-bashrc" ]]; then
+        SKIP_BASHRC=true
+    fi
+done
+
+if [[ "$SKIP_BASHRC" == false ]]; then
     # Check if already configured
     if grep -q "tmux-manager" "$BASHRC" 2>/dev/null; then
         success "Already configured in .bashrc"
@@ -132,4 +137,11 @@ echo
 echo -e "Usage:"
 echo -e "  ${BOLD}tmux-manager${NC}    - Run interactively"
 echo
-echo -e "On your next SSH login, you'll be prompted to select or create a tmux session."
+if [[ "$SKIP_BASHRC" == false ]]; then
+    echo -e "On your next SSH login, you'll be prompted to select or create a tmux session."
+else
+    echo -e "Run ${BOLD}tmux-manager${NC} manually or add it to your shell config."
+fi
+echo
+echo -e "To install without .bashrc modification:"
+echo -e "  ${BOLD}curl -fsSL https://raw.githubusercontent.com/z4nr34l/tmux-manager/main/install.sh | bash -s -- --no-bashrc${NC}"
