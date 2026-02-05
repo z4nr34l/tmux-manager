@@ -16,7 +16,7 @@ NC='\033[0m'
 
 INSTALL_DIR="$HOME/.local/share/tmux-manager"
 BIN_DIR="$HOME/.local/bin"
-REPO_URL="https://github.com/USER/tmux-manager.git"  # Update with actual repo URL
+REPO_URL="https://github.com/z4nr34l/tmux-manager.git"
 
 info() {
     echo -e "${CYAN}[INFO]${NC} $1"
@@ -71,7 +71,7 @@ else
         # Fallback: download directly if git clone fails
         warn "Git clone failed, trying direct download..."
         mkdir -p "$INSTALL_DIR"
-        curl -fsSL "https://raw.githubusercontent.com/USER/tmux-manager/main/tmux-manager" -o "$INSTALL_DIR/tmux-manager"
+        curl -fsSL "https://raw.githubusercontent.com/z4nr34l/tmux-manager/main/tmux-manager" -o "$INSTALL_DIR/tmux-manager"
     }
     success "Downloaded"
 fi
