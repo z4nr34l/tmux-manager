@@ -32,16 +32,25 @@ clear_screen() { printf '\033[2J\033[H'; }
 cleanup() {
     show_cursor
     tput cnorm 2>/dev/null || true
-    clear_screen
 }
 trap cleanup EXIT
 
 read_key() {
     local key
-    IFS= read -rsn1 key 2>/dev/null
+
+    # Read from /dev/tty for SSH/.bashrc compatibility
+    if [[ -e /dev/tty ]]; then
+        IFS= read -rsn1 key < /dev/tty 2>/dev/null
+    else
+        IFS= read -rsn1 key 2>/dev/null
+    fi
 
     if [[ $key == $'\x1b' ]]; then
-        read -rsn2 -t 0.1 key 2>/dev/null
+        if [[ -e /dev/tty ]]; then
+            read -rsn2 -t 0.1 key < /dev/tty 2>/dev/null
+        else
+            read -rsn2 -t 0.1 key 2>/dev/null
+        fi
         case "$key" in
             '[A') echo "up" ;;
             '[B') echo "down" ;;
@@ -199,13 +208,26 @@ prompt_session_name() {
     printf "${CYAN}› ${NC}"
 
     show_cursor
-    read -r session_name
+    if [[ -e /dev/tty ]]; then
+        read -r session_name < /dev/tty
+    else
+        read -r session_name
+    fi
     hide_cursor
 
     echo "$session_name"
 }
 
 main() {
+    # Ensure we have a terminal
+    if [[ ! -e /dev/tty ]]; then
+        echo "Error: No terminal available."
+        exit 1
+    fi
+
+    # Redirect all output to tty for .bashrc compatibility
+    exec > /dev/tty 2>&1
+
     if ! command -v tmux &> /dev/null; then
         echo "Error: tmux is not installed."
         exit 1
