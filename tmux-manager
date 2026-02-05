@@ -115,7 +115,7 @@ main() {
         echo -e "  ${BOLD}1-$session_count)${NC} Attach to existing session"
     fi
     echo -e "  ${BOLD}n)${NC} Create ${BOLD}n${NC}ew session with custom name"
-    echo -e "  ${BOLD}c)${NC} ${BOLD}C${NC}reate quick session (session-HHMMSS)"
+    echo -e "  ${BOLD}c/Enter)${NC} ${BOLD}C${NC}reate quick session (session-HHMMSS)"
     echo -e "  ${BOLD}q)${NC} ${BOLD}Q${NC}uit (no tmux)"
     echo
 
@@ -139,12 +139,9 @@ main() {
                     return
                 fi
                 ;;
-            [cC])
+            ""|[cC])
                 create_session ""
                 return
-                ;;
-            "")
-                echo -e "${RED}Please select an option.${NC}"
                 ;;
             *)
                 # Check if it's a number within range

@@ -19,6 +19,7 @@ Existing sessions:
 Options:
   1-3) Attach to existing session
   n) Create new session with custom name
+  c/Enter) Create quick session (session-HHMMSS)
   q) Quit (no tmux)
 
 Select option:
