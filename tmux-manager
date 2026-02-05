@@ -128,7 +128,7 @@ main() {
             exit 0
             ;;
         [nN])
-            echo -ne "${CYAN}Enter session name (or press Enter for auto-generated): ${NC}"
+            echo -ne "${CYAN}Enter session name ${YELLOW}(Enter = session-HHMMSS)${NC}: "
             read -r session_name
             create_session "$session_name"
             ;;
