@@ -26,9 +26,34 @@ Select option:
 
 ## Installation
 
+### Interactive (recommended)
+
 ```bash
 curl -fsSL https://raw.githubusercontent.com/z4nr34l/tmux-manager/main/install.sh | bash
 ```
+
+The installer will guide you through configuration options.
+
+### Non-interactive / Automated
+
+```bash
+# Full installation with all features enabled
+curl -fsSL https://raw.githubusercontent.com/z4nr34l/tmux-manager/main/install.sh | bash -s -- --bashrc --path-export -y
+
+# Install without modifying .bashrc
+curl -fsSL https://raw.githubusercontent.com/z4nr34l/tmux-manager/main/install.sh | bash -s -- --no-bashrc -y
+```
+
+### Installer Options
+
+| Option | Description |
+|--------|-------------|
+| `--bashrc` | Enable auto-start on SSH login |
+| `--no-bashrc` | Don't modify .bashrc |
+| `--path-export` | Add ~/.local/bin to PATH |
+| `--no-path-export` | Don't modify PATH |
+| `-y, --yes` | Accept defaults (non-interactive) |
+| `-h, --help` | Show help message |
 
 ## Features
 
