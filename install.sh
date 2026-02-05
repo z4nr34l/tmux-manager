@@ -25,6 +25,7 @@ CYAN='\033[0;36m'
 BOLD='\033[1m'
 NC='\033[0m'
 
+VERSION="1.1.0"
 INSTALL_DIR="$HOME/.local/share/tmux-manager"
 BIN_DIR="$HOME/.local/bin"
 REPO_URL="https://github.com/z4nr34l/tmux-manager.git"
@@ -128,15 +129,15 @@ ask_user() {
         hint="[y/N]"
     fi
 
-    echo -ne "${CYAN}$prompt ${BOLD}$hint${NC}: "
-
-    # Read from /dev/tty if available (for curl | bash), otherwise stdin
-    if [[ -t 0 ]]; then
-        read -r response
-    elif [[ -e /dev/tty ]]; then
+    # Always read from /dev/tty for curl | bash compatibility
+    if [[ -e /dev/tty ]]; then
+        echo -ne "${CYAN}$prompt ${BOLD}$hint${NC}: " > /dev/tty
         read -r response < /dev/tty
     else
-        response=""
+        # Fallback: use defaults if no tty available
+        warn "No terminal available, using default: $default"
+        REPLY="$default"
+        return
     fi
 
     case "$response" in
@@ -158,7 +159,7 @@ ask_user() {
 print_header() {
     echo -e "${BOLD}${CYAN}"
     echo "╔════════════════════════════════════╗"
-    echo "║   tmux-manager installer           ║"
+    echo "║   tmux-manager installer v${VERSION}    ║"
     echo "╚════════════════════════════════════╝"
     echo -e "${NC}"
 }
