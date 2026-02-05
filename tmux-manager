@@ -277,6 +277,7 @@ main() {
                     create_session "$name"
                     exit 0
                 elif [[ "$item" == "__SKIP__" ]]; then
+                    clear_screen
                     exit 0
                 else
                     show_cursor
@@ -286,6 +287,7 @@ main() {
                 fi
                 ;;
             "quit"|"escape")
+                clear_screen
                 exit 0
                 ;;
         esac
